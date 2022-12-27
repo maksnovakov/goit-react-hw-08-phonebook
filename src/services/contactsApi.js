@@ -12,7 +12,6 @@ export const contactsApi = createApi({
       return headers;
     },
   }),
-
   tagTypes: ['Contact'],
   endpoints: buider => ({
     getContacts: buider.query({

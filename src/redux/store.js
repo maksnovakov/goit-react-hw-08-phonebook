@@ -11,9 +11,9 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import logger from 'redux-logger';
-import { contactsApi } from 'services/contactsApi';
+import { contactsApi } from 'services/contactsAPI';
 import { authReducer } from 'redux/auth/';
-import contactsReducer from 'redux/contacts/contactsReducer';
+import contactsReducer from 'redux/contacts/contactsReducers';
 
 const authPersistConfig = {
   key: 'auth',
@@ -30,7 +30,7 @@ export const store = configureStore({
   middleware: getDefaultMiddleware => {
     return getDefaultMiddleware({
       serializableCheck: {
-        ignoreActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     }).concat(contactsApi.middleware);
   },
