@@ -1,6 +1,6 @@
 import axios from 'axios';
+import { infoToast } from '../../components/Toasts';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import Notiflix from 'notiflix';
 
 axios.defaults.baseURL = 'https://connections-api.herokuapp.com';
 
@@ -13,23 +13,26 @@ const token = {
   },
 };
 
-const register = createAsyncThunk('auth/register', async userData => {
+const register = createAsyncThunk('auth/register', async credentials => {
   try {
-    const { data } = await axios.post('/users/singup', userData);
+    const { data } = await axios.post('/users/signup', credentials);
     token.set(data.token);
+    console.log(data);
     return data;
   } catch (error) {
-    return Notiflix.Notify.failure(error.message);
+    console.log(error.message);
+    infoToast('The user is alredy registered');
   }
 });
 
-const logIn = createAsyncThunk('auth/login', async userData => {
+const logIn = createAsyncThunk('auth/login', async credentials => {
   try {
-    const { data } = await axios.post('/users/login', userData);
+    const { data } = await axios.post('/users/login', credentials);
     token.set(data.token);
     return data;
   } catch (error) {
-    return Notiflix.Notify.failure(error.message);
+    console.log(error.message);
+    infoToast('Incorrect login or password');
   }
 });
 
@@ -38,35 +41,38 @@ const logOut = createAsyncThunk('auth/logout', async () => {
     await axios.post('/users/logout');
     token.unset();
   } catch (error) {
-    return Notiflix.Notify.failure(error.message);
+    console.log(error.message);
   }
 });
 
 const fetchCurrentUser = createAsyncThunk(
   'auth/refresh',
   async (_, thunkAPI) => {
+    console.log(thunkAPI.getState());
     const state = thunkAPI.getState();
     const persistedToken = state.auth.token;
-
+    console.log(persistedToken);
     if (persistedToken === null) {
+      console.log('!persistedToken');
       return thunkAPI.rejectWithValue();
+      // return state;
     }
-
     token.set(persistedToken);
     try {
       const { data } = await axios.get('/users/current');
+      console.log(data);
       return data;
     } catch (error) {
-      return Notiflix.Notify(error.message);
+      console.log(error.message);
+      return thunkAPI.rejectWithValue();
     }
   }
 );
 
-const operations = {
+const authOperations = {
   register,
   logIn,
   logOut,
   fetchCurrentUser,
 };
-
-export default operations;
+export default authOperations;

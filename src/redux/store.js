@@ -10,10 +10,9 @@ import {
   REGISTER,
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import logger from 'redux-logger';
-import { contactsApi } from 'services/contactsAPI';
-import { authReducer } from 'redux/auth/';
-import contactsReducer from 'redux/contacts/contactsReducers';
+
+import { contactsReduser } from './contacts/contactsSlice';
+import { authReducer } from './auth/auth-slice';
 
 const authPersistConfig = {
   key: 'auth',
@@ -23,19 +22,17 @@ const authPersistConfig = {
 
 export const store = configureStore({
   reducer: {
+    contacts: contactsReduser,
     auth: persistReducer(authPersistConfig, authReducer),
-    contactsReducer,
-    [contactsApi.reducerPath]: contactsApi.reducer,
   },
-  middleware: getDefaultMiddleware => {
-    return getDefaultMiddleware({
+  middleware: getDefaultMiddleware => [
+    ...getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(contactsApi.middleware);
-  },
-  logger,
-  devTools: process.env.NODE_ENV === 'development',
+    }),
+  ],
+  // devTools: process.env.NODE_ENV === 'development',
 });
 
 export const persistor = persistStore(store);

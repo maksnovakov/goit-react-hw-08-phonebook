@@ -1,14 +1,5 @@
-.Background{
-    position:fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background-color: rgba(255,255,255,0.7);
-}
-
-.Loader{
-    position: fixed;
-    left: 45%;
-    top: 50%;
+.loading {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
 }
