@@ -36,7 +36,7 @@ export const ContacstForm = () => {
     enterContacts
       ? infoToast(`${name} or ${number} is already in contacts`)
       : addContact({ name, number });
-    !enterContacts && successToast('the contact is in the list  😃');
+    !enterContacts && successToast('the contact is in the list ');
     setName('');
     setNumber('');
   };
